@@ -1,8 +1,19 @@
-from escpos.printer import Usb
+import win32print
 
-""" Seiko Epson Corp. Receipt Printer (EPSON TM-T88III) """
-p = Usb(0x1fc9, 0x2016, 0, profile="default")
-p.text("Hello World\n")
-p.profile.media['width']['pixel'] = 576
+printer = "Xprinter XP-365B"
 
-p.cut()
+data = b"""
+SIZE 60 mm,30 mm
+GAP 0 mm,0 mm
+CLS
+TEXT 20,20,"3",0,1,1,"HELLO"
+PRINT 1
+"""
+
+h = win32print.OpenPrinter(printer)
+win32print.StartDocPrinter(h, 1, ("test", None, "RAW"))
+win32print.StartPagePrinter(h)
+win32print.WritePrinter(h, data)
+win32print.EndPagePrinter(h)
+win32print.EndDocPrinter(h)
+win32print.ClosePrinter(h)
